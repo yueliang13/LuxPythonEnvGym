@@ -16,11 +16,13 @@ This is a replica of the Lux AI 2021 game ported directly over to python. It als
 # Installation
 This should work cross-platform, but I've only tested Windows 10 and Ubuntu.
 
-**Important:** Use Python 3.7.* for training your models. This is required since when you create a Kaggle submission, the Kaggle competition will run the code using Python 3.7.*, and you will get a model deserialization error if you train the model with Python 3.8>=.
+**Important:** This project requires Python 3.8+. It has been migrated to use `gymnasium` and `stable_baselines3>=2.0.0` instead of the legacy `gym` and older SB3 versions.
 
 Install luxai2021 environment package by running the installer:
 
-```python setup.py install```
+```
+pip install -e .
+```
 
 You will need Node.js version 12 or above: [here](https://nodejs.org/en/download/)
 
@@ -68,7 +70,7 @@ from luxai2021.game.actions import *
 from luxai2021.game.constants import LuxMatchConfigs_Default
 from functools import partial  # pip install functools
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 import time
 import sys
 
@@ -80,7 +82,7 @@ class MyCustomAgent(AgentWithModel):
         super().__init__(mode, model)
         
         # Define action and observation space
-        # They must be gym.spaces objects
+        # They must be gymnasium.spaces objects
         # Example when using discrete actions:
         self.actions_units = [
             partial(MoveAction, direction=Constants.DIRECTIONS.CENTER),  # This is the do-nothing action
@@ -224,18 +226,17 @@ if __name__ == "__main__":
                      opponent_agent=opponent)
     
     # Play 5 games
-    env.reset()
-    obs = env.reset()
+    obs, info = env.reset()
     game_count = 0
     while game_count < 5:
         # Take a random action
         action_code = random.sample(range(player.action_space.n), 1)[0]
-        (obs, reward, is_game_over, state) = env.step( action_code )
-        
-        if is_game_over:
+        (obs, reward, terminated, truncated, info) = env.step( action_code )
+
+        if terminated or truncated:
             print(f"Game done turn {env.game.state['turn']}, final map:")
             print(env.game.map.get_map_string())
-            obs = env.reset()
+            obs, info = env.reset()
             game_count += 1
     
     # Attach a ML model from stable_baselines3 and train a RL model
@@ -256,15 +257,15 @@ if __name__ == "__main__":
 
     # Inference the agent for 5 games
     game_count = 0
-    obs = env.reset()
+    obs, info = env.reset()
     while game_count < 5:
         action_code, _states = model.predict(obs, deterministic=False)
-        (obs, reward, is_game_over, state) = env.step( action_code )
-        
-        if is_game_over:
+        (obs, reward, terminated, truncated, info) = env.step( action_code )
+
+        if terminated or truncated:
             print(f"Game done turn {env.game.state['turn']}, final map:")
             print(env.game.map.get_map_string())
-            obs = env.reset()
+            obs, info = env.reset()
             game_count += 1
 
 
@@ -297,10 +298,10 @@ You have trained a model, and now you'd like to submit it as a kaggle submission
 
 Either view the above kaggle example or prepare a submission yourself:
 1. Place your trained model file as `model.zip` and your agent file `agent_policy.py` in the `./kaggle_submissions/` folder.
-1. Run `python download_dependencies.py` in `./kaggle_submissions/` to copy two required python package dependencies into this folder (luxai2021 and stable_baselines3).
+1. Install dependencies via pip: `pip install -e .` (installs `gymnasium` and `stable_baselines3>=2.0.0`).
 1. Tarball the folder into a submission `tar -czf submission.tar.gz -C kaggle_submissions .`
 
-**Important:** The model.zip needs to have been trained on Python 3.7.* or you get a deserialization error, since this is the python version that Kaggle Environment uses to inference the model in submission.
+**Note:** The Kaggle submission workflow references the original competition which used Python 3.7. If you are submitting to Kaggle, you may need to ensure compatibility with their runtime environment.
 
 ## Creating and viewing a replay
 If you are using the example `train.py` to train your model, replays will be generated and saved along with a copy of the model every 100K steps. By default 5 replay matches will be saved with each model checkpoint into `.\\models\\model(runid)_(step_count)_(rand).json` to monitor your bot's behaviour. You can view the replay here:

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m py_compile luxai2021/env/lux_env.py)",
+      "Bash(python3 -m py_compile luxai2021/env/agent.py)",
+      "Bash(python3 -m py_compile examples/agent_policy.py)",
+      "Bash(python3 -m py_compile examples/train.py)",
+      "Bash(python3 -m py_compile setup.py)",
+      "Bash(python3 -m py_compile /Users/yue/Code/homework/rl/project/LuxPythonEnvGym/setup.py)",
+      "Bash(grep *)"
+    ]
+  }
+}

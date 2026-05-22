@@ -1,0 +1,18 @@
+[project]
+name = "luxai2021"
+version = "0.1.0"
+description = "Matching python environment code for Lux AI 2021 Kaggle competition and a gym interface for RL models"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+dependencies = [
+    "pytest",
+    "stable-baselines3>=2.0.0",
+    "numpy",
+    "tensorboard",
+    "gymnasium>=0.26.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"

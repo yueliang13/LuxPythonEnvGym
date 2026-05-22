@@ -5,7 +5,7 @@ import copy
 import random
 
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 from luxai2021.env.agent import Agent, AgentWithModel
 from luxai2021.game.actions import *

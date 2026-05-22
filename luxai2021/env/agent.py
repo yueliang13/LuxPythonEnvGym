@@ -2,7 +2,7 @@ import sys
 import time
 
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from ..game.constants import Constants
 
 """

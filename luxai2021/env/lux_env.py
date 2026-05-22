@@ -2,7 +2,7 @@
 Implements the base class for a Lux environment
 """
 import traceback
-import gym
+import gymnasium
 import os
 from stable_baselines3.common.callbacks import BaseCallback
 
@@ -70,11 +70,11 @@ class SaveReplayAndModelCallback(BaseCallback):
                 print(f"Saved model checkpoint and replay to {path}")
         return True
 
-class LuxEnvironment(gym.Env):
+class LuxEnvironment(gymnasium.Env):
     """
-    Custom Environment that follows gym interface
+    Custom Environment that follows gymnasium interface
     """
-    metadata = {'render.modes': ['human']}
+    metadata = {'render_modes': ['human']}
 
     def __init__(self, configs, learning_agent, opponent_agent, replay_validate=None, replay_folder=None, replay_prefix="replay"):
         """
@@ -83,7 +83,7 @@ class LuxEnvironment(gym.Env):
         :param learning_agent:
         :param opponent_agent:
         """
-        super(LuxEnvironment, self).__init__()
+        super().__init__()
 
         # Create the game
         self.game = Game(configs)
@@ -158,13 +158,15 @@ class LuxEnvironment(gym.Env):
         # Calculate reward for this step
         reward = self.learning_agent.get_reward(self.game, is_game_over, is_new_turn, is_game_error)
 
-        return obs, reward, is_game_over, {}
+        return obs, reward, is_game_over, False, {}
 
-    def reset(self):
+    def reset(self, *, seed=None, options=None):
         """
 
         :return:
         """
+        if seed is not None:
+            self.game.configs["seed"] = seed
         self.current_step = 0
         self.last_observation_object = None
 
@@ -180,7 +182,7 @@ class LuxEnvironment(gym.Env):
         obs = self.learning_agent.get_observation(self.game, unit, city_tile, team, is_new_turn)
         self.last_observation_object = (unit, city_tile, team, is_new_turn)
 
-        return obs
+        return obs, {}
 
     def render(self, **kwargs):
         """
