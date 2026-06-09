@@ -7,7 +7,14 @@
       "Bash(python3 -m py_compile examples/train.py)",
       "Bash(python3 -m py_compile setup.py)",
       "Bash(python3 -m py_compile /Users/yue/Code/homework/rl/project/LuxPythonEnvGym/setup.py)",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(python3 -m py_compile /Users/yue/Code/homework/rl/project/LuxPythonEnvGym/examples/project/agent_policy.py)",
+      "Bash(python3 -m py_compile /Users/yue/Code/homework/rl/project/LuxPythonEnvGym/examples/project/train.py)",
+      "Bash(python3 -m py_compile /Users/yue/Code/homework/rl/project/LuxPythonEnvGym/examples/baseline/evaluate.py)",
+      "Bash(npm list *)",
+      "Bash(npm root *)",
+      "Bash(npx lux-ai-2021 *)",
+      "Bash(pip show *)"
     ]
   }
 }
